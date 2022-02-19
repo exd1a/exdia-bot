@@ -1,11 +1,11 @@
 {
     "discordToken" : "OTQzMTU5MDg0ODAxMjA0MjQ0.Ygu_WA.f1KcmIIWjH8wWTJFOpwdrhS8T70",
-    "docsToken" : null,
     "docsID" : "14lfUbCadTSD3hrWIOd2LRcWCyexF1KSy07Axs01KRk4",
-    "docLink" : "https://docs.google.com/document/d/14lfUbCadTSD3hrWIOd2LRcWCyexF1KSy07Axs01KRk4/edit?usp=sharing",
+    "testDocsID" : "1VK-DgYAEVeYR0tb-_MNMz8gDgWH1-3vYuMMkJApSjSM",
     "channelID" : "855507295416483871",
     "channelID2" : "944040197996314694",
+    "helpMessage" : "Denny's Commands: %d, %denny, %dennyers, %tuwup;\n\nExdia's Commands: %e, %exdia, %boju, %bozhidar, %bojidar, %bozhkata, %bojkata, %bouzhkata, %boujkata, %avram, %bojidarrers, %bozhidarrers;\n\nBoyan's Commands: %b, %boyanners, %boyan, %boqnners, %boqn, %bucky, %shortbucky.",
     "set1" : ["d", "denny", "dennyers", "tuwup"],
-    "set2" : ["exdia", "boju", "bozhidar", "bojidar", "bozhkata", "bojkata", "bouzhkata", "boujkata", "avram", "e", "bojidarrers", "bozhidarrers"],
+    "set2" : ["e", "exdia", "boju", "bozhidar", "bojidar", "bozhkata", "bojkata", "bouzhkata", "boujkata", "avram", "bojidarrers", "bozhidarrers"],
     "set3" : ["b", "boyanners", "boyan", "boqnners", "boqn", "bucky", "shortbucky"]
 }
