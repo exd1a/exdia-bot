@@ -1,7 +1,8 @@
 {
   "dependencies": {
     "discord.js": "^13.6.0",
-    "googleapis": "^95.0.0"
+    "googleapis": "^95.0.0",
+    "minimist": "^1.2.5"
   },
   "devDependencies": {
     "eslint": "^8.9.0"
