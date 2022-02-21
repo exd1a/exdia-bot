@@ -7,32 +7,77 @@ const cyrillicPattern = /^\p{Script=Cyrillic}+$/u;
 
 const infos = require("./secrets/infos.json");
 const setLists = require("./secrets/setLists.json");
-const msgList_en = require("./secrets/msgList_en.json");
-const msgList_bg = require("./secrets/msgList_bg.json");
+const msgList_en = require("./locale/msgList_en.json");
+const msgList_bg = require("./locale/msgList_bg.json");
 const documentId = infos.testDocsID;
 
-const helpMsg = `
-User1's Commands: \`\`\`%${setLists.set1.join(", %")}\`\`\`
-User2's Commands: \`\`\`%${setLists.set2.join(", %")}\`\`\`
-User3's Commands: \`\`\`%${setLists.set3.join(", %")}\`\`\`
-User4's Commands: \`\`\`%${setLists.set4.join(", %")}\`\`\`
-Other Commands: \`\`\`%${setLists.set5.join(", %")}\`\`\``;
-const helpMsg_bg = `
-Командите на User1: \`\`\`%${setLists.set1.join(", %")}\`\`\`
-Командите на User2: \`\`\`%${setLists.set2.join(", %")}\`\`\`
-Командите на User3: \`\`\`%${setLists.set3.join(", %")}\`\`\`
-Командите на User4: \`\`\`%${setLists.set4.join(", %")}\`\`\`
-Други команди: \`\`\`%${setLists.set5.join(", %")}\`\`\``;
-const initMsg = msgList_en.initMsg;
-const helpCmdMsg = msgList_en.helpCmdMsg;
-const helpPauseMsg = msgList_en.helpPauseMsg;
-const helpSayMsg = msgList_en.helpSayMsg;
-const unknownCmdMsg = msgList_en.unknownCmdMsg;
-const initMsg_bg = msgList_bg.initMsg;
-const helpCmdMsg_bg = msgList_bg.helpCmdMsg;
-const helpPauseMsg_bg = msgList_bg.helpPauseMsg;
-const helpSayMsg_bg = msgList_bg.helpSayMsg;
-const unknownCmdMsg_bg = msgList_bg.unknownCmdMsg;
+function HelpMsg(lang) {
+	let helpMsg = 0;
+	let msgList;
+	switch (lang) {
+		case "bg":
+			msgList = msgList_bg;
+			break;
+		case "en":
+		default:
+			msgList = msgList_en;
+			break;
+	}
+	Object.keys(setLists).forEach(element => {
+		if (element === "other") {
+			helpMsg += `${msgList.helpMsgOther}: \`\`\`%${setLists[element].join(" %")}\`\`\`\n`;
+		}
+		else {
+			helpMsg += `${msgList.helpMsgUserBefore}${element.charAt(0).toUpperCase() + element.slice(1)}${msgList.helpMsgUserAfter}: \`\`\`%${setLists[element].join(" %")}\`\`\`\n`;
+		}
+	});
+	return helpMsg.slice(1);
+}
+function InitMsg(lang) {
+  switch (lang) {
+    case "bg":
+      return msgList_bg.initMsg;
+    case "en":
+    default:
+      return msgList_en.initMsg;
+  }
+}
+function HelpCmdMsg(lang) {
+  switch (lang) {
+    case "bg":
+      return msgList_bg.helpCmdMsg;
+    case "en":
+    default:
+      return msgList_en.helpCmdMsg;
+  }
+}
+function HelpPauseMsg(lang) {
+  switch (lang) {
+    case "bg":
+      return msgList_bg.helpPauseMsg;
+    case "en":
+    default:
+      return msgList_en.helpPauseMsg;
+  }
+}
+function HelpSayMsg(lang) {
+  switch (lang) {
+    case "bg":
+      return msgList_bg.helpSayMsg;
+    case "en":
+    default:
+      return msgList_en.helpSayMsg;
+  }
+}
+function UnknownCmdMsg(lang) {
+  switch (lang) {
+    case "bg":
+      return msgList_bg.unknownCmdMsg;
+    case "en":
+    default:
+      return msgList_en.unknownCmdMsg;
+  }
+}
 
 // const ChannelID = infos.channelID;
 const testChannelID = infos.testChannelID;
@@ -56,12 +101,12 @@ client.on("messageCreate", async function(msg) {
   if (msg.author.bot) {return;}
 	if (nodeArgs.g) {
     const googleClient = await auth.getClient();
-		const googleDocs = google.docs({ version: "v1", auth: googleClient });
-		const metadata = await googleDocs.documents.get({
+    const googleDocs = google.docs({ version: "v1", auth: googleClient });
+    const metadata = await googleDocs.documents.get({
       auth,
-			documentId,
-		});
-		console.log(metadata.data);
+      documentId,
+    });
+    console.log(metadata.data);
 	}
 	// if (msg.channelId !== testChannelID) {return;}
 	if (!msg.content.includes(prefix)) {return;}
@@ -80,83 +125,103 @@ client.on("messageCreate", async function(msg) {
   }
 
 	switch (command) {
-  case "pause":
-    client.isPaused = true;
-    return msg.channel.send("The bot is paused, use %unpause to unpause it.");
-	case "ping":
-		return msg.channel.send("Pong!");
-	case "пинг":
-		return msg.channel.send("Понг!");
-	case "say": case "кажи":
-		console.log(args);
-		return msg.channel.send(args.join(" "));
-	// case msgList.set1:
-	// 	return msg.channel.send("user1");
-	// case msgList.set2:
-	// 	return msg.channel.send("user2");
-	// case msgList.set3:
-	// 	return msg.channel.send("user3");
-	// case msgList.set4:
-	// 	return msg.channel.send("user4");
-	// case msgList.set5:
-	// 	return msg.channel.send("other");
-	case "help": case "h":
-		switch (args[0]) {
-    case "say": case "%say": case "кажи": case "%кажи":
-			return msg.channel.send(helpSayMsg);
-		case "ping": case "%ping": case "пинг": case "%пинг":
-			return msg.channel.send("Ping-pong, I guess.");
-		case "help": case "h": case "%помощ": case "%п":
-			return msg.channel.send(helpCmdMsg);
-    case "pause": case "%pause":
-      return msg.channel.send(helpPauseMsg);
-		// case msgList.set1:
-		// 	return msg.channel.send("enter a тъпизъм in the google doc under user1's category");
-		// case msgList.set2:
-		// 	return msg.channel.send("enter a тъпизъм in the google doc under user2's category");
-		// case msgList.set3:
-		// 	return msg.channel.send("enter a тъпизъм in the google doc under user3's category");
-    // case msgList.set4:
-    // 	return msg.channel.send("enter a тъпизъм in the google doc under user4's category");
-    // case msgList.set5:
-    // 	return msg.channel.send("enter a тъпизъм in the google doc under the "other" category");
-		default:
-			return msg.channel.send(helpMsg);
-		}
-  case "помощ": case "п":
-    switch (args[0]) {
-      case "say": case "%say": case "кажи": case "%кажи":
-        return msg.channel.send(helpSayMsg_bg);
-      case "ping": case "%ping": case "пинг": case "%пинг":
-        return msg.channel.send("Пинг-понг, предполагам.");
-      case "help": case "%help": case "h": case "%h": case "помощ": case "%помощ": case "п": case "%п":
-        return msg.channel.send(helpCmdMsg_bg);
-      case "pause":
-        return msg.channel.send(helpPauseMsg_bg);
-      // case msgList.set1:
-      // 	return msg.channel.send("enter a тъпизъм in the google doc under user1's category");
-      // case msgList.set2:
-      // 	return msg.channel.send("enter a тъпизъм in the google doc under user2's category");
-      // case msgList.set3:
-      // 	return msg.channel.send("enter a тъпизъм in the google doc under user3's category");
-      // case msgList.set4:
-      // 	return msg.channel.send("enter a тъпизъм in the google doc under user4's category");
-      // case msgList.set5:
-      // 	return msg.channel.send("enter a тъпизъм in the google doc under the "other" category");
-      default:
-        return msg.channel.send(helpMsg_bg);
+    case "pause":
+      client.isPaused = true;
+      return msg.channel.send("The bot is paused, use %unpause to unpause it.");
+    case "ping":
+      return msg.channel.send("Pong!");
+    case "пинг":
+      return msg.channel.send("Понг!");
+    case "say": case "кажи":
+      console.log(args);
+      return msg.channel.send(args.join(" "));
+    case "добави":
+      console.log("cool");
+      break;
+    case "add":
+      if (args.length === 0) {return msg.channel.send("bruh");}
+      setLists.user1.forEach(element => {
+        if (args[0] === element) {return msg.channel.send(`nice ${element}`);}
+      });
+      setLists.user2.forEach(element => {
+        if (args[0] === element) {return msg.channel.send(`nice ${element}`);}
+      });
+      setLists.user3.forEach(element => {
+        if (args[0] === element) {return msg.channel.send(`nice ${element}`);}
+      });
+      setLists.user4.forEach(element => {
+        if (args[0] === element) {return msg.channel.send(`nice ${element}`);}
+      });
+      setLists.other.forEach(element => {
+        if (args[0] === element) {return msg.channel.send(`nice ${element}`);}
+      });
+      if (args.length === 1) {return msg.channel.send("actual bruh moment");}
+      if (args.length > 1) {return msg.channel.send(args.join(" "));}
+      break;
+    // case msgList.user1:
+    // 	return msg.channel.send("user1");
+    // case msgList.user2:
+    // 	return msg.channel.send("user2");
+    // case msgList.user3:
+    // 	return msg.channel.send("user3");
+    // case msgList.user4:
+    // 	return msg.channel.send("user4");
+    // case msgList.other:
+    // 	return msg.channel.send("other");
+    case "help": case "h":
+      switch (args[0]) {
+        case "say": case "%say": case "кажи": case "%кажи":
+          return msg.channel.send(HelpSayMsg());
+        case "ping": case "%ping": case "пинг": case "%пинг":
+          return msg.channel.send("Ping-pong, I guess.");
+        case "help": case "h": case "%помощ": case "%п":
+          return msg.channel.send(HelpCmdMsg());
+        case "pause": case "%pause":
+          return msg.channel.send(HelpPauseMsg());
+          // case msgList.user1:
+          // 	return msg.channel.send("enter a тъпизъм in the google doc under user1's category");
+          // case msgList.user2:
+          // 	return msg.channel.send("enter a тъпизъм in the google doc under user2's category");
+          // case msgList.user3:
+          // 	return msg.channel.send("enter a тъпизъм in the google doc under user3's category");
+          // case msgList.user4:
+          // 	return msg.channel.send("enter a тъпизъм in the google doc under user4's category");
+          // case msgList.other:
+          // 	return msg.channel.send("enter a тъпизъм in the google doc under the "other" category");
+        case "bg":
+          return msg.channel.send(HelpMsg("bg"));
+        default:
+          return msg.channel.send(HelpMsg());
       }
-	default:
-		if (cyrillicPattern.test(msg.content.slice(prefix.length))) {
-      return msg.channel.send(unknownCmdMsg_bg);
-    }
-    return msg.channel.send(unknownCmdMsg);
+    case "помощ": case "п":
+      switch (args[0]) {
+        case "say": case "%say": case "кажи": case "%кажи":
+          return msg.channel.send(HelpSayMsg("bg"));
+        case "ping": case "%ping": case "пинг": case "%пинг":
+          return msg.channel.send("Пинг-понг, предполагам.");
+        case "help": case "%help": case "h": case "%h": case "помощ": case "%помощ": case "п": case "%п":
+          return msg.channel.send(HelpCmdMsg("bg"));
+        case "pause":
+          return msg.channel.send(HelpPauseMsg("bg"));
+        // case msgList.user1:
+        //   return msg.channel.send("enter a тъпизъм in the google doc under user1's category");
+        // case msgList.user2:
+        //   return msg.channel.send("enter a тъпизъм in the google doc under user2's category");
+        // case msgList.user3:
+        //   return msg.channel.send("enter a тъпизъм in the google doc under user3's category");
+        // case msgList.user4:
+        //   return msg.channel.send("enter a тъпизъм in the google doc under user4's category");
+        // case msgList.other:
+        //   return msg.channel.send('enter a тъпизъм in the google doc under the "other" category');
+        default:
+          return msg.channel.send(HelpMsg("bg"));
+      }
+    default:
+      if (cyrillicPattern.test(msg.content.slice(prefix.length))) {
+        return msg.channel.send(UnknownCmdMsg("bg"));
+      }
+      return msg.channel.send(UnknownCmdMsg());
 	}
-	// basicReplyWithArgs(msgList.set1, "user1", msg, args, command);
-	// basicReplyWithArgs(msgList.set2, "user2", msg, args, command);
-	// basicReplyWithArgs(msgList.set3, "user3", msg, args, command);
-	// basicReplyWithArgs(msgList.set4, "user4", msg, args, command);
-	// basicReplyWithArgs(msgList.set4, "other", msg, args, command);
 });
 
 client.once("ready", function() {
@@ -164,10 +229,10 @@ client.once("ready", function() {
 	if (nodeArgs.i) {
 		if (nodeArgs.b) {
 			client.channels.cache.get(testChannelID)
-				.send(initMsg_bg);
+				.send(InitMsg("bg"));
 			return;
 		}
 		client.channels.cache.get(testChannelID)
-			.send(initMsg);
+			.send(InitMsg());
 	}
 });

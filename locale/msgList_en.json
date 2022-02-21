@@ -1,0 +1,10 @@
+{
+    "initMsg" : "Hello world! The bot has returned. Exdia probably restarted me. :)))",
+    "unknownCmdMsg" : "Unknown command or you didn't say a command, try again with a real command or say %help for a full list of commands.",
+    "helpCmdMsg" : "Type %help by itself or add any command and see what that particular command does.",
+    "helpPauseMsg" : "Pauses the bot from listening to commands until it is unpaused using `!unpause`.",
+    "helpSayMsg" : "Makes the bot say whatever you want it to say.",
+    "helpMsgUserBefore" : "",
+    "helpMsgUserAfter" : "'s commands",
+    "helpMsgOther" : "Other Commands"
+}
