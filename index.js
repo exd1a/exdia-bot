@@ -113,21 +113,7 @@ client.on("messageCreate", async function(msg) {
 	const args = msg.content.slice(prefix.length).split(" ");
 	const command = args.shift().toLowerCase();
 
-  if (command === "unpause") {
-    if (!client.isPaused) {
-      return msg.channel.send("The bot is already listening to commands.");
-    }
-    client.isPaused = false;
-    return msg.channel.send("The bot is listening to your commands again.");
-  }
-  if (client.isPaused) {
-    return msg.channel.send({ files: ["https://img-comment-fun.9cache.com/media/ajAGPnw/akmoGz75_700w_0.jpg"] });
-  }
-
 	switch (command) {
-    case "pause":
-      client.isPaused = true;
-      return msg.channel.send("The bot is paused, use %unpause to unpause it.");
     case "ping":
       return msg.channel.send("Pong!");
     case "пинг":
